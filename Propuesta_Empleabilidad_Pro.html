@@ -1,0 +1,565 @@
+<!DOCTYPE html>\n<html lang="es"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta Nodo · Ecosistema de Empleabilidad Pro</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.0.16/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.0.16/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@7.0.0/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@7.0.0/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@7.0.0/600.css">
+<style>
+:root{
+  --bg: #06020c; 
+  --bg2: #0f0518;
+  --p900: #140524;
+  --p800: #1f083d;
+  --p700: #2d0b5e;
+  --p600: #4c1d95;
+  --p400: #8b5cf6;
+  --p300: #a78bfa;
+  --p200: #c4b5fd;
+  --p100: #ede9fe;
+  --acc: #00f0ff; /* Azul verdoso/Cyan tech (neon) */
+  --acc2: #a78bfa; /* Soft purple */
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --card-bg: rgba(20, 5, 36, 0.5);
+  --card-border: rgba(139, 92, 246, 0.25);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Plus Jakarta Sans', 'Helvetica Neue', sans-serif;
+  --mono: 'Courier New', monospace;
+  --r: 16px;
+  --sh: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+
+/* ── MODO EDICIÓN ── */
+[contenteditable="true"] { outline: none; transition: all 0.2s; border-radius: 4px; display: inline-block; min-width: 20px;}
+body.edit-mode [contenteditable="true"] {
+  border-bottom: 1px dashed var(--acc);
+  background: rgba(0, 240, 255, 0.05);
+  cursor: text;
+  padding: 0 4px;
+}
+body.edit-mode [contenteditable="true"]:focus {
+  background: rgba(0, 240, 255, 0.15);
+  border-bottom: 1px solid var(--acc);
+}
+#author-tools {
+  position: fixed; top: 80px; right: 20px; z-index: 999;
+  background: var(--p800); border: 1px solid var(--acc);
+  padding: 12px; border-radius: 12px; display: flex; gap: 10px; flex-direction: column;
+  box-shadow: 0 0 25px rgba(0,240,255,0.2); backdrop-filter: blur(10px);
+}
+#author-tools button {
+  background: var(--p600); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 14px;
+  border-radius: 8px; cursor: pointer; font-family: var(--sans); font-size: 12px; font-weight: 600;
+  transition: all 0.2s;
+}
+#author-tools button:hover { background: var(--p400); }
+#author-tools button.export { background: var(--acc); color: #000; box-shadow: 0 0 15px rgba(0,240,255,0.4); border:none;}
+
+/* ── HEADER ── */
+header { position: sticky; top: 0; z-index: 100; background: rgba(6, 2, 12, 0.85); backdrop-filter: blur(16px); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 62px; border-bottom: 1px solid var(--card-border); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+.logo { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.logo-mark { font-family: var(--mono); font-size: 17px; font-weight: 900; color: #fff; letter-spacing: 4px; text-shadow: 0 0 15px var(--p400); line-height: 1; }
+.logo-sub { font-size: 7px; letter-spacing: 4px; color: var(--acc); text-transform: uppercase; line-height: 1; margin-top: 2px; font-weight: 700; }
+.logo-divider { width: 1px; height: 28px; background: var(--card-border); }
+.logo-client { font-family: var(--serif); font-size: 16px; color: var(--p200); letter-spacing: .02em; font-style: italic; }
+nav { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+nav::-webkit-scrollbar { display: none; }
+nav button { background: transparent; border: none; color: var(--muted); font-family: var(--sans); font-size: 12px; font-weight: 600; padding: 7px 14px; cursor: pointer; border-radius: 8px; white-space: nowrap; transition: all .2s; }
+nav button:hover { color: #fff; background: rgba(255,255,255,0.05); }
+nav button.on { background: rgba(124,58,237,0.2); color: var(--acc); border: 1px solid var(--card-border); text-shadow: 0 0 8px rgba(0,240,255,0.4); }
+
+/* ── HERO ── */
+.hero { padding: 5rem 1.5rem 4rem; position: relative; overflow: hidden; border-bottom: 1px solid var(--card-border); }
+.hero::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 50% 0%, var(--p800) 0%, transparent 65%); pointer-events: none; }
+.hero-grid { position: absolute; inset: 0; pointer-events: none; opacity: 0.25; background-image: linear-gradient(var(--p600) 1px, transparent 1px), linear-gradient(90deg, var(--p600) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(500px) rotateX(60deg); transform-origin: top center; }
+.hero-glow { position: absolute; left: 50%; top: -150px; transform: translateX(-50%); width: 700px; height: 400px; background: var(--p600); filter: blur(120px); opacity: 0.4; pointer-events: none; }
+.hi { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; text-align: center; }
+.htag { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.3); color: var(--acc); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 6px 18px; border-radius: 30px; margin-bottom: 1.5rem; box-shadow: 0 0 20px rgba(0,240,255,0.15); backdrop-filter: blur(5px); }
+.hero h1 { font-family: var(--serif); font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 600; color: #fff; line-height: 1.1; margin-bottom: 1.2rem; }
+.hero h1 i { color: var(--acc); font-style: normal; text-shadow: 0 0 25px rgba(0,240,255,0.5); }
+.hero p { color: var(--muted); font-size: 16px; max-width: 650px; margin: 0 auto 3rem; }
+.stats { display: inline-flex; gap: 3rem; justify-content: center; flex-wrap: wrap; background: rgba(15,5,24,0.6); backdrop-filter: blur(12px); padding: 1.8rem 3rem; border-radius: 24px; border: 1px solid var(--card-border); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+.stats > div { text-align: center; }
+.sn { font-family: var(--mono); font-size: 2.5rem; font-weight: 700; color: #fff; display: block; line-height: 1; text-shadow: 0 0 15px rgba(139,92,246,0.5); }
+.sl { font-size: 11px; color: var(--p300); text-transform: uppercase; letter-spacing: .1em; margin-top: 8px; display: block; font-weight: 600; }
+
+/* ── MAIN ── */
+main { padding: 4rem 1.5rem; max-width: 1000px; margin: 0 auto; }
+.sec { display: none; animation: fi .5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+.sec.on { display: block; }
+@keyframes fi { to { opacity: 1; transform: translateY(0); } }
+.st { font-family: var(--serif); font-size: 2.5rem; font-weight: 600; color: #fff; margin-bottom: .5rem; }
+.ss { color: var(--muted); font-size: 15px; margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); max-width: 750px; }
+
+/* ── GRIDS & CARDS ── */
+.g2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+.g3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+.card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: var(--r); padding: 2rem; box-shadow: var(--sh); border: 1px solid var(--card-border); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+.card:hover { transform: translateY(-5px); border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 15px 45px rgba(0,0,0,0.6), inset 0 0 30px rgba(124,58,237,0.1); }
+.card h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 1rem; }
+.card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.ci { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(0,240,255,0.1)); border: 1px solid var(--card-border); }
+
+/* ── BULLETS & BADGES ── */
+ul.cl { list-style: none; margin-top: 1.2rem; display: flex; flex-direction: column; gap: 10px; }
+ul.cl li { font-size: 14px; color: var(--muted); display: flex; align-items: flex-start; gap: 12px; line-height: 1.5; }
+ul.cl li::before { content: '◈'; color: var(--acc); font-size: 11px; flex-shrink: 0; margin-top: 4px; text-shadow: 0 0 10px var(--acc); }
+
+.badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.05em; text-transform: uppercase; }
+.bp { background: rgba(124,58,237,0.2); color: var(--p200); border: 1px solid var(--p600); }
+.bd { background: rgba(0,240,255,0.1); color: var(--acc); border: 1px solid rgba(0,240,255,0.3); }
+.ba { background: rgba(255,215,0,0.1); color: #ffd700; border: 1px solid rgba(255,215,0,0.3); }
+.pill { font-size: 11px; padding: 5px 12px; border-radius: 20px; background: var(--p900); color: var(--p200); border: 1px solid var(--card-border); font-weight: 500; display: inline-block; margin: 3px; }
+
+/* ── KPI BARS ── */
+.kpi-item { margin-bottom: 1.25rem; }
+.kh { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.kl { font-size: 13px; font-weight: 600; color: #fff; }
+.kv { font-size: 12px; font-family: var(--mono); color: var(--acc); font-weight: 600; }
+.kt { background: rgba(255,255,255,0.05); border-radius: 20px; height: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+.kf { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--p600), var(--acc)); transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1); width: 0; box-shadow: 0 0 10px var(--acc); }
+
+/* ── TIMELINE ── */
+.tl { position: relative; padding-left: 2.5rem; margin-top: 2rem; }
+.tl::before { content: ''; position: absolute; left: 11px; top: 8px; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--acc), var(--p600), transparent); }
+.ti { position: relative; margin-bottom: 2rem; }
+.td { position: absolute; left: -2.5rem; top: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--bg); border: 2px solid var(--acc); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--acc); box-shadow: 0 0 15px rgba(0,240,255,0.3); }
+.tc { background: var(--card-bg); border-radius: var(--r); padding: 1.5rem; border: 1px solid var(--card-border); }
+.tc .tt { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--acc); margin-bottom: .5rem; }
+.tc h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: .5rem; }
+
+/* ── EQUIPO / INFO ── */
+.ei { background: rgba(0,0,0,0.2); border-radius: 9px; padding: 1rem; border: 1px solid var(--card-border); }
+.ei h5 { font-size: 13.5px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.ei p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.tn { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; color: #fff; }
+.tr { font-size: 14px; color: var(--acc); font-weight: 500; }
+.tco { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 2px; text-transform: uppercase; }
+.er { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.av { width: 64px; height: 64px; border-radius: 50%; background: var(--p800); border: 2px solid var(--acc); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 16px; font-weight: 900; color: var(--acc); flex-shrink: 0; box-shadow: 0 0 15px rgba(0,240,255,0.2); }
+
+/* ── DARK BLOCKS (.ph) ── */
+.ph { background: rgba(20,5,36,0.8); border: 1px solid var(--card-border); border-radius: var(--r); padding: 1.8rem; color: #fff; }
+.ph h4 { font-size: 15px; font-weight: 600; color: var(--acc); margin-bottom: 1rem; }
+.ps { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.ps-item { flex: 1; min-width: 140px; border-left: 2px solid var(--p600); padding-left: 1rem; }
+.ps-item .m { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--p300); font-weight: 700; }
+.ps-item p { font-size: 13.5px; color: rgba(255,255,255,.7); margin-top: .4rem; }
+
+/* ── AI HIGHLIGHT ── */
+.ai-hl { background: linear-gradient(135deg, rgba(20,9,36,0.9), rgba(45,11,94,0.5)); border: 1px solid var(--p600); border-radius: var(--r); padding: 2.5rem; color: #fff; margin-bottom: 2.5rem; position: relative; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+.ai-hl::after { content: ''; position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; border-radius: 50%; background: radial-gradient(circle, rgba(0,240,255,0.15) 0%, transparent 70%); pointer-events: none; }
+.ai-hl h3 { font-family: var(--serif); font-size: 2rem; font-weight: 600; color: var(--acc); margin-bottom: 1rem; text-shadow: 0 0 20px rgba(0,240,255,0.3); }
+
+/* ── INVESTMENT ── */
+.ph2 { background: linear-gradient(to right, var(--p800), var(--p900)); border: 1px solid var(--p600); border-radius: var(--r); padding: 2.5rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem; position: relative; overflow: hidden; box-shadow: 0 15px 50px rgba(0,0,0,0.6); }
+.ph2::before { content:''; position:absolute; inset:0; background: url('data:image/svg+xml;utf8,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="%23a78bfa" fill-opacity="0.1"/></svg>'); opacity: 0.5; pointer-events:none; }
+.pm { font-family: var(--mono); font-size: 3.5rem; font-weight: 700; color: #fff; line-height: 1; text-shadow: 0 0 25px rgba(139,92,246,0.6); margin-top: 0.5rem;}
+.pp { font-size: 14px; color: var(--acc); font-weight: 600; margin-top: .8rem; text-transform: uppercase; letter-spacing: .08em; }
+.pi ul { list-style: none; margin-top: .5rem; }
+.pi ul li { font-size: 15px; color: var(--text); display: flex; align-items: flex-start; gap: 12px; margin-bottom: .8rem; }
+.pi ul li::before { content: '✔'; color: var(--acc); font-weight: 700; flex-shrink: 0; text-shadow: 0 0 10px var(--acc); }
+
+/* ── ORACLE WIDGET ── */
+#oracle-widget { position: fixed; bottom: 30px; right: 30px; z-index: 1000; font-family: var(--sans); }
+#oracle-fab { background: linear-gradient(135deg, var(--p600), var(--acc)); color: #fff; border: none; border-radius: 30px; padding: 14px 24px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0,240,255,0.3); display: flex; align-items: center; gap: 10px; transition: all 0.3s; }
+#oracle-fab:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,240,255,0.4); }
+#oracle-chat { display: none; position: absolute; bottom: 70px; right: 0; width: 360px; background: rgba(10,4,16,0.95); backdrop-filter: blur(20px); border: 1px solid var(--acc); border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(0,240,255,0.2); overflow: hidden; flex-direction: column; }
+#oracle-chat.show { display: flex; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.oracle-header { background: rgba(31,8,61,0.8); padding: 18px; font-weight: 700; color: #fff; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; letter-spacing: 0.05em; }
+.oracle-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 22px; transition: color 0.2s; }
+.oracle-close:hover { color: #fff; }
+.oracle-body { padding: 18px; height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+.msg { max-width: 85%; padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.5; }
+.msg.ai { background: rgba(124,58,237,0.2); color: #fff; border-top-left-radius: 4px; align-self: flex-start; border: 1px solid rgba(124,58,237,0.3); }
+.msg.user { background: rgba(0,240,255,0.15); color: #fff; border-top-right-radius: 4px; align-self: flex-end; border: 1px solid rgba(0,240,255,0.3); }
+.oracle-input { padding: 15px; border-top: 1px solid var(--card-border); display: flex; gap: 10px; background: rgba(0,0,0,0.3); }
+.oracle-input input { flex: 1; background: var(--bg); border: 1px solid var(--card-border); padding: 12px; border-radius: 10px; color: #fff; outline: none; font-family: var(--sans); }
+.oracle-input input:focus { border-color: var(--acc); box-shadow: 0 0 10px rgba(0,240,255,0.2); }
+.oracle-input button { background: var(--acc); color: #000; border: none; padding: 0 18px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 18px; transition: transform 0.2s; }
+.oracle-input button:hover { transform: scale(1.05); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--p600); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--acc); }
+
+@media(max-width: 620px){
+  header { padding: 0 1rem; }
+  .logo-client, .logo-divider { display: none; }
+  .hero h1 { font-size: 2.2rem; }
+  .pm { font-size: 2.5rem; }
+  #oracle-chat { width: calc(100vw - 40px); right: -10px; }
+  .stats { gap: 1.5rem; padding: 1.5rem; }
+}
+</style>
+</head>
+<body class="">
+
+<!-- HERRAMIENTAS DE AUTOR (No visibles para el cliente final) -->
+
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div>
+      <div class="logo-mark">NODO</div>
+      <div class="logo-sub">TECH &amp; GROWTH</div>
+    </div>
+    <div class="logo-divider"></div>
+    <div class="logo-client">ID Empleabilidad</div>
+  </div>
+  <nav>
+    <button class="on" onclick="go('inicio',this)">Visión</button>
+    <button onclick="go('alcance',this)" class="">Alcance</button>
+    <button onclick="go('kpis',this)" class="">Objetivos</button>
+    <button onclick="go('cronograma',this)" class="">Cronograma</button>
+    <button onclick="go('inversion',this)" class="">Inversión</button>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hi">
+    <div class="htag">◈ Propuesta Comercial Interactiva</div>
+    <h1><span>Ecosistema de Empleabilidad Pro</span></h1>
+    <p>Transformar servicios de consultoría tradicional en experiencias digitales de alta conversión mediante un ecosistema inteligente y automatizado.</p>
+    <div class="stats">
+      <div><span class="sn" data-target="90">90</span><span class="sl">Días de Duración</span></div>
+      <div><span class="sn" data-target="3">3</span><span class="sl">Fases Estratégicas</span></div>
+      <div><span class="sn" data-target="1">1</span><span class="sl">Oráculo de IA</span></div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<!-- INICIO -->
+<div id="inicio" class="sec on">
+  <p class="st">El Retorno Inmediato de tu Inversión</p>
+  <p class="ss" style="color: #fff; font-size: 15px;">No estás comprando una página web; estás invirtiendo en una <strong>máquina de adquisición de clientes</strong>. Nuestro enfoque integral (Desarrollo + IA + Tráfico) asegura que cada peso invertido se traduzca en autoridad, automatización y ventas tangibles.</p>
+  
+  <h4 style="margin-bottom: 1.5rem; color: var(--acc); font-size: 16px;">¿Por qué debes ejecutar este ecosistema de principio a fin con NODO?</h4>
+  <div class="g2">
+    <div class="card">
+      <div class="ci">⚡</div>
+      <h3>1. Ventas 24/7 Sin Esfuerzo Manual</h3>
+      <p>Dejarás de perseguir prospectos y de responder dudas repetitivas. Tu plataforma capta, educa, cualifica mediante IA y procesa pagos en automático, liberando tu tiempo para que te enfoques exclusivamente en entregar un servicio premium.</p>
+    </div>
+    <div class="card">
+      <div class="ci">⭐</div>
+      <h3>2. Cierre de Ventas "High-Ticket"</h3>
+      <p>En el mundo digital, la percepción lo es todo. Proyectarás el nivel de una firma consultora internacional. Los candidatos pagarán tarifas más altas sin dudarlo, porque la estética impecable y la fluidez de tu plataforma justifican inmediatamente tu valor comercial.</p>
+    </div>
+    <div class="card">
+      <div class="ci">🔄</div>
+      <h3>3. Sinergia Total (Por qué las 3 fases)</h3>
+      <p>El desarrollo sin tráfico es un gasto; el tráfico hacia una web deficiente es dinero tirado a la basura. Ejecutar las 3 fases juntas garantiza que cada persona impactada caiga en un embudo perfecto, diseñado obsesivamente para convertir clics en dinero.</p>
+    </div>
+    <div class="card">
+      <div class="ci">🤖</div>
+      <h3>4. Ventaja Desleal con IA</h3>
+      <p>Mientras tu competencia depende de formularios estáticos, lentos y aburridos, tu Oráculo de Inteligencia Artificial interactúa al instante, descarta a los simples curiosos y te entrega únicamente prospectos perfilados, filtrados y listos para comprar.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ALCANCE (FASE 1) -->
+<div id="alcance" class="sec">
+  <p class="st">Fase 1: Desarrollo del Ecosistema Base</p>
+  <p class="ss">Días 1 al 30. Esta fase representa la columna vertebral del proyecto. Se desarrollará mediante código limpio para garantizar máxima velocidad, retención de usuarios y un rendimiento técnico superior.</p>
+  
+  <h4 style="margin-bottom: 1.5rem; color: var(--acc);">Componentes e Integraciones Clave:</h4>
+  <div class="g2" style="margin-bottom:1.5rem">
+    <div class="card" style="border-top:3px solid var(--p400)">
+      <span class="badge bd" style="margin-bottom:.8rem">Plataforma</span>
+      <h3>Tienda de Servicios</h3>
+      <p style="font-size:13px; color:var(--muted); margin-top:0.5rem;">Catálogo optimizado para la compra directa de asesorías con un checkout simplificado para maximizar las ventas.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--acc)">
+      <span class="badge bp" style="margin-bottom:.8rem">Estética y Conectividad</span>
+      <h3>Diseño Premium &amp; SEO</h3>
+      <ul class="cl">
+        <li>Interfaz de alta gama en tonos negro y azul verdoso.</li>
+        <li>Optimización responsive: celular, tableta y escritorio.</li>
+        <li>Estrategia SEO para ganar relevancia en Google.</li>
+        <li>Canal de venta directo integrado (WhatsApp Business).</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="border-top:3px solid var(--p300); background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(0,240,255,0.05))">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
+      <div>
+        <span class="badge ba" style="margin-bottom:.5rem">La Integración Estrella</span>
+        <h3>El Oráculo de IA (Asistente Inteligente)</h3>
+      </div>
+      <span style="font-family:var(--serif);font-size:1.6rem;font-weight:600;color:var(--acc)">Soporte 24/7</span>
+    </div>
+    <p style="font-size:14px;color:var(--muted)">Un sistema inteligente que brinda asesoría continua, procesa datos para ofrecer recomendaciones preliminares sobre CV y LinkedIn, y automatiza la calificación de prospectos, guiándolos hacia el servicio ideal.</p>
+  </div>
+</div>
+
+<!-- KPIs (FASE 2 Y 3) -->
+<div id="kpis" class="sec">
+  <p class="st">Objetivos de Campaña y KPIs</p>
+  <p class="ss">Métricas y objetivos esperados para las etapas de Reconocimiento y Adquisición de Leads, con optimización de la inversión publicitaria.</p>
+  <div class="g2">
+    <div class="card">
+      <h3 style="margin-bottom:1rem; color:var(--acc)">Fase 2: Reconocimiento</h3>
+      <p style="font-size:13px; color:var(--text); margin-bottom:1rem">Incrementar significativamente el volumen de visitantes a la fanpage de Facebook y al perfil de Instagram para consolidar la comunidad.</p>
+      
+      <div class="kpi-item"><div class="kh"><span class="kl">Alcance Estimado (Personas)</span><span class="kv">15K - 25K</span></div><div class="kt"><div class="kf" data-w="100" style="width: 100%;"></div></div></div>
+      <div class="kpi-item"><div class="kh"><span class="kl">Frecuencia de Visualización</span><span class="kv">1.5 - 1.8x</span></div><div class="kt"><div class="kf" data-w="75" style="width: 75%;"></div></div></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:1rem; color:var(--p400)">Fase 3: Conversión</h3>
+      <p style="font-size:13px; color:var(--text); margin-bottom:1rem">Generación de prospectos cualificados a través de formularios nativos de Meta, filtrando a los curiosos para asegurar intención de compra.</p>
+
+      <div class="kpi-item"><div class="kh"><span class="kl">Clientes Potenciales (Leads)</span><span class="kv">10 - 25</span></div><div class="kt"><div class="kf" data-w="100" style="width: 100%;"></div></div></div>
+      <div class="kpi-item"><div class="kh"><span class="kl">Tasa de Filtro/Cualificación</span><span class="kv">100%</span></div><div class="kt"><div class="kf" data-w="100" style="width: 100%;"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CRONOGRAMA -->
+<div id="cronograma" class="sec">
+  <p class="st">Fases Estratégicas del Proyecto</p>
+  <p class="ss">Duración Total: 90 días calendario (Período estricto de inicio a fin).</p>
+  <div class="tl">
+    <div class="ti">
+      <div class="td">F1</div>
+      <div class="tc">
+        <p class="tt">Días 1 al 30</p>
+        <h4>Desarrollo del Ecosistema Base</h4>
+        <p>Construcción de la columna vertebral tecnológica, integración de tienda de servicios, SEO, diseño premium y despliegue del Oráculo de IA.</p>
+      </div>
+    </div>
+    <div class="ti">
+      <div class="td">F2</div>
+      <div class="tc">
+        <p class="tt">Días 31 al 60</p>
+        <h4>Optimización de Activos y Reconocimiento</h4>
+        <p>Preparar estéticamente los canales digitales y calentar la audiencia mediante campañas de visibilidad masiva. Creación de 15 a 20 piezas gráficas informativas de alto impacto.</p>
+      </div>
+    </div>
+    <div class="ti">
+      <div class="td" style="background:var(--acc);border-color:var(--bg);color:#000;text-shadow:none;font-size:12px">F3</div>
+      <div class="tc" style="background:rgba(0,240,255,0.05);border-left:3px solid var(--acc)">
+        <p class="tt">Días 61 al 90</p>
+        <h4>Adquisición de Leads y Conversión</h4>
+        <p>Ejecución exclusiva mediante formularios nativos dentro de las redes sociales. Montaje técnico, filtrado mediante preguntas clave y generación de contactos cualificados.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="ph" style="margin-top:2rem; background:rgba(20,5,36,0.9); border-color:var(--p600)">
+    <h4 style="color:var(--acc2)">Cláusula de Exclusiones y Límites del Servicio</h4>
+    <p style="font-size:14px;color:rgba(255,255,255,0.8);margin-bottom:1rem">Los servicios de Nodo Tech &amp; Growth son de carácter estrictamente tecnológico y de ingeniería de pauta digital. Para garantizar máxima transparencia:</p>
+    <div class="ps">
+      <div class="ps-item"><span class="m">No incluye CM</span><p>No se realizan publicaciones diarias orgánicas, ni respuestas a comentarios o mensajes directos (DMs).</p></div>
+      <div class="ps-item"><span class="m">Sin contenido humano</span><p>No incluye grabaciones, edición de Reels/TikToks, sesiones fotográficas ni redacción de blogs.</p></div>
+      <div class="ps-item"><span class="m">Temporalidad</span><p>El proyecto tiene una duración rigurosa de 90 días. Cualquier actividad posterior requerirá un nuevo acuerdo.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- INVERSIÓN -->
+<div id="inversion" class="sec">
+  <p class="st">Esquema de Inversión Total</p>
+  <p class="ss">Para asegurar la ejecución fluida del cronograma de 90 días, los pagos se estructuran de la siguiente manera.</p>
+  
+  <div class="ph2" style="margin-bottom:1.5rem">
+    <div>
+      <p style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);margin-bottom:.5rem">Fase 1: Desarrollo y Oráculo IA</p>
+      <p class="pm">$<span>2.000.000</span></p>
+      <p class="pp">COP · Pagadero en 2 partes</p>
+    </div>
+    <div class="pi">
+      <ul>
+        <li><strong>Esquema de Pago:</strong></li>
+        <li>$1.000.000 COP al inicio del desarrollo.</li>
+        <li>$1.000.000 COP contra entrega y publicación.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ph2" style="background: linear-gradient(to right, rgba(0,240,255,0.08), rgba(124,58,237,0.1)); border-color: var(--acc)">
+    <div>
+      <p style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--acc);margin-bottom:.5rem">Etapa de Marketing (Fases 2 y 3 unificadas)</p>
+      <p class="pm" style="text-shadow: 0 0 20px rgba(0,240,255,0.5)">$<span>945.000</span></p>
+      <p class="pp" style="color:#fff">COP · Se cancela al inicio de la Fase 2 (Día 31)</p>
+    </div>
+    <div class="pi">
+      <ul>
+        <li><strong>Desglose Consolidado:</strong></li>
+        <li>$495.000 COP (Total Fase 2: Pauta Meta, Herramientas IA y Diseño Nodo).</li>
+        <li>$450.000 COP (Total Fase 3: Pauta en Formularios y Optimización Nodo).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ORÁCULO WIDGET -->
+<div id="oracle-widget">
+  <button id="oracle-fab" onclick="toggleOracle()">
+    <span style="font-size:20px;text-shadow:0 0 10px #fff">🤖</span> Oráculo de la Propuesta
+  </button>
+  <div id="oracle-chat" class="">
+    <div class="oracle-header">
+      <span><span style="color:var(--acc)">●</span> Oráculo IA Nodo</span>
+      <button class="oracle-close" onclick="toggleOracle()">×</button>
+    </div>
+    <div class="oracle-body" id="oracle-messages">
+      <div class="msg ai">Hola. Soy la inteligencia artificial de Nodo. Conozco el 100% de esta propuesta técnica del "Ecosistema de Empleabilidad Pro". ¿Tienes alguna pregunta sobre los entregables, los 90 días o la inversión?</div>
+    </div>
+    <div class="oracle-input">
+      <input type="text" id="oracle-input-field" placeholder="Pregúntame algo..." onkeypress="if(event.key === 'Enter') sendOracleMessage()">
+      <button onclick="sendOracleMessage()">→</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Navegación de secciones
+function go(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  if(btn) btn.classList.add('on');
+  
+  if(id === 'kpis') {
+    setTimeout(runKPIs, 200);
+  }
+}
+
+// Animación de barras KPI
+function runKPIs() {
+  document.querySelectorAll('.kf').forEach(b => { 
+    b.style.width = b.dataset.w + '%'; 
+  });
+}
+
+// Animación de números en el Hero
+function runCounters() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const t = +el.dataset.target;
+    if (isNaN(t)) return;
+    let c = 0, step = Math.max(t / 40, 1);
+    const tmr = setInterval(() => {
+      c = Math.min(c + step, t);
+      el.textContent = Math.round(c);
+      if (c >= t) clearInterval(tmr);
+    }, 30);
+  });
+}
+window.addEventListener('load', () => setTimeout(runCounters, 300));
+
+// Oráculo Chat Lógica (Para la propuesta pública)
+function toggleOracle() {
+  document.getElementById('oracle-chat').classList.toggle('show');
+}
+
+// Función asíncrona para interactuar con la IA
+async function sendOracleMessage() {
+  const input = document.getElementById('oracle-input-field');
+  const text = input.value.trim();
+  if(!text) return;
+  
+  const chat = document.getElementById('oracle-messages');
+  
+  // Agregar mensaje del usuario
+  chat.innerHTML += `<div class="msg user">${text}</div>`;
+  input.value = '';
+  chat.scrollTop = chat.scrollHeight;
+
+  // Animación de "escribiendo"
+  const typingId = 'typing-' + Date.now();
+  chat.innerHTML += `<div id="${typingId}" class="msg ai" style="opacity:0.7">El oráculo está analizando la propuesta...</div>`;
+  chat.scrollTop = chat.scrollHeight;
+
+  // ==========================================
+  // AQUÍ PUEDES CONECTAR TU API REAL (OpenAI, Anthropic, etc)
+  // ==========================================
+  
+  // Lógica de Oráculo Contextualizado al Proyecto "Ecosistema de Empleabilidad Pro"
+  setTimeout(() => {
+    document.getElementById(typingId).remove();
+    
+    const lowerText = text.toLowerCase();
+    let reply = "";
+
+    if (lowerText.includes("precio") || lowerText.includes("costo") || lowerText.includes("inversion") || lowerText.includes("pagar") || lowerText.includes("valor")) {
+      reply = "El esquema de inversión está dividido: La Fase 1 (Desarrollo del Ecosistema y el Oráculo IA) tiene un valor de $2.000.000 COP. Las Fases 2 y 3 (Marketing, Ads y Captación) tienen un valor único de $945.000 COP que se cancela al iniciar el mes 2. ¿Te gustaría saber cómo se divide el pago inicial?";
+    } else if (lowerText.includes("tiempo") || lowerText.includes("demora") || lowerText.includes("duracion") || lowerText.includes("cuando") || lowerText.includes("dias") || lowerText.includes("meses") || lowerText.includes("fases")) {
+      reply = "El proyecto completo se ejecuta en un sprint estricto de 90 días calendario. Los primeros 30 días construimos la plataforma base, y los siguientes 60 días lanzamos campañas masivas para generar clientes potenciales.";
+    } else if (lowerText.includes("oraculo") || lowerText.includes("ia") || lowerText.includes("inteligencia") || lowerText.includes("cv") || lowerText.includes("hoja de vida") || lowerText.includes("linkedin")) {
+      reply = "El Oráculo de IA es nuestra integración estrella. Actuará como tu asistente 24/7: interactúa con tus candidatos, analiza sus necesidades (como su CV o LinkedIn) y te los entrega ya filtrados para que tú solo te enfoques en cerrar la asesoría.";
+    } else if (lowerText.includes("trafico") || lowerText.includes("ads") || lowerText.includes("leads") || lowerText.includes("clientes") || lowerText.includes("meta") || lowerText.includes("marketing") || lowerText.includes("redes") || lowerText.includes("pauta")) {
+      reply = "Para captar clientes usamos Meta Ads y formularios nativos. Estimamos alcanzar entre 15.000 y 25.000 personas, para entregarte de 10 a 25 prospectos altamente perfilados con intención real de compra durante la Fase 3.";
+    } else if (lowerText.includes("pago") || lowerText.includes("cuota") || lowerText.includes("anticipo") || lowerText.includes("mitad")) {
+      reply = "Para arrancar solo requerimos el 50% de la Fase 1 ($1.000.000 COP). El excedente del desarrollo se paga contra entrega, y la inversión de marketing ($945.000 COP) se cancela cuando arranquemos el mes 2.";
+    } else {
+      const fallbacks = [
+        "Mi base de datos está entrenada exclusivamente con esta propuesta. Las 3 fases garantizan que tu negocio de empleabilidad opere 24/7 sin que intervengas manualmente en cada asesoría. ¿Tienes dudas sobre la Fase 1 o la etapa de Marketing?",
+        "Esa es una excelente pregunta. Lo importante de este Ecosistema de Empleabilidad Pro es que dejamos de depender de procesos manuales; tu plataforma captará, educará y cualificará prospectos automáticamente.",
+        "Como Oráculo de NODO, mi función es aclarar esta propuesta. Te confirmo que este acuerdo dura 90 días y está diseñado para proyectar la máxima autoridad digital en tu nicho. ¿Quieres revisar la sección de Inversión?"
+      ];
+      reply = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    }
+    
+    chat.innerHTML += `<div class="msg ai">${reply}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }, 1200);
+}
+
+// Exportar HTML Limpio para el Cliente
+function exportarPropuesta() {
+  // Desactivar temporalmente el modo edición
+  const wasEditMode = document.body.classList.contains('edit-mode');
+  document.body.classList.remove('edit-mode');
+  
+  // Clonar el documento
+  const clone = document.documentElement.cloneNode(true);
+  
+  // Eliminar la caja de herramientas de creador
+  const tools = clone.querySelector('#author-tools');
+  if (tools) tools.remove();
+  
+  // Eliminar atributos de edición para que el cliente final no pueda editar
+  clone.querySelectorAll('[contenteditable]').forEach(el => {
+    el.removeAttribute('contenteditable');
+    el.removeAttribute('spellcheck');
+  });
+
+  // Crear archivo y descargar
+  const html = '<!DOCTYPE html>\\n' + clone.outerHTML;
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Propuesta_Empleabilidad_Pro.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  
+  // Restaurar modo edición si estaba activo
+  if(wasEditMode) {
+    document.body.classList.add('edit-mode');
+  }
+}
+</script>
+
+
+</body></html>
